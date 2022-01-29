@@ -43,10 +43,53 @@ namespace AhoyBooking
                     Configuration.GetConnectionString("AhoyBookingConnection"));
             });
 
+            services.AddAutoMapper(typeof(Startup));
+            //Inject Repositories
+            services.AddScoped<IHotelRepository, HotelRepository>();
+            services.AddScoped<IHotelImageRepository, HotelImageRepository>();
+            services.AddScoped<IRoomsPriceRepository, RoomsPriceRepository>();
+            services.AddScoped<IBookRepository, BookRepository>();
+
+
+            //Inject Services
+            services.AddScoped<IHotelsService, HotelsService>();
+            services.AddScoped<IFileUpload, FileUpload>();
+            services.AddScoped<IAccountsService, AccountsService>();
+            services.AddScoped<IRoomsPriceService, RoomsPriceService>();
+            services.AddScoped<IBookingService, BookingService>();
+            services.AddScoped<IAccountsService, AccountsService>();
+            
+
+            ///Authentication
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+               .AddEntityFrameworkStores<AhoyDbContext>()
+               .AddDefaultTokenProviders();
+            // Adding Authentication  
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+
+            // Adding Jwt Bearer  
+            .AddJwtBearer(options =>
+            {
+                options.SaveToken = true;
+                options.RequireHttpsMetadata = false;
+                options.TokenValidationParameters = new()
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidAudience = Configuration["JWT:ValidAudience"],
+                    ValidIssuer = Configuration["JWT:ValidIssuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
+                };
+            });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AhoyBooking", Version = "v1" });
-                
+
                 // To Enable authorization using Swagger (JWT)    
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
@@ -72,44 +115,6 @@ namespace AhoyBooking
                     }
                 });
             });
-            // Adding Authentication  
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-
-            // Adding Jwt Bearer  
-            .AddJwtBearer(options =>
-            {
-                options.SaveToken = true;
-                options.RequireHttpsMetadata = false;
-                options.TokenValidationParameters = new()
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidAudience = Configuration["JWT:ValidAudience"],
-                    ValidIssuer = Configuration["JWT:ValidIssuer"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
-                };
-            });
-            ///Authentication
-            services.AddIdentity<ApplicationUser, IdentityRole>()
-               .AddEntityFrameworkStores<AhoyDbContext>()
-               .AddDefaultTokenProviders();
-            services.AddAutoMapper(typeof(Startup));
-            //Inject Repositories
-            services.AddScoped<IHotelRepository,HotelRepository>();
-            services.AddScoped<IHotelImageRepository, HotelImageRepository>();
-            services.AddScoped<IRoomsPriceRepository, RoomsPriceRepository>();
-
-
-            //Inject Services
-            services.AddScoped<IHotelsService, HotelsService>();
-            services.AddScoped<IFileUpload, FileUpload>();
-            services.AddScoped<IAccountsService, AccountsService>();
-            services.AddScoped<IRoomsPriceService, RoomsPriceService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

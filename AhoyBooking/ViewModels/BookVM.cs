@@ -10,6 +10,6 @@ namespace AhoyBooking.ViewModels
         public int Persons { get; set; }
         public DateTime CheckIn { get; set; }
         public DateTime CheckOut { get; set; }
-        public bool IsConfirmed { get; set; }
+        public int PricingId { get; set; }
     }
 }

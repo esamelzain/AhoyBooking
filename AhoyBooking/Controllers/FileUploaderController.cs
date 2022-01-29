@@ -10,16 +10,16 @@ namespace AhoyBooking.Controllers
     public class FileUploaderController : ControllerBase
     {
         private readonly IFileUpload _fileUpload;
-        
+
         public FileUploaderController(IFileUpload fileUpload)
         {
             _fileUpload = fileUpload;
         }
         [HttpPost]
         [Route("upload")]
-        public FileURL Upload([FromForm] FileUploadVM fileUploadVM)
+        public ActionResult<FileURL> Upload([FromForm] FileUploadVM fileUploadVM)
         {
-            return  _fileUpload.UploadFile(fileUploadVM.folder,fileUploadVM.FormFile );
+            return Ok(_fileUpload.UploadFile(fileUploadVM.folder, fileUploadVM.FormFile));
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AhoyBooking.Data;
 using AhoyBooking.Models;
+using AhoyBooking.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using System;
@@ -14,6 +15,7 @@ namespace AhoyBooking.Services
     {
         RoomsPrice AddRoomsPrice(RoomsPrice RoomsPrice);
         RoomsPrice GetRoomsPrice(int Id);
+        object CalculatePrice(int pricingId, int persons, DateTime checkIn, DateTime checkOut);
     }
     public class RoomsPriceService : IRoomsPriceService
     {
@@ -35,5 +37,27 @@ namespace AhoyBooking.Services
         /// <param name="Id"></param>
         /// <returns>RoomsPrice RoomsPrice</returns>
         public RoomsPrice GetRoomsPrice(int Id) => _roomsPriceRepository.Get(Id);
+        /// <summary>
+        /// claculating actual price
+        /// </summary>
+        /// <param name="pricingId,persons,checkIn checkOut"></param>
+        /// <returns></returns>
+        public object CalculatePrice(int pricingId, int persons, DateTime checkIn, DateTime checkOut)
+        {
+            int days = (int)(checkOut - checkIn).TotalDays;
+            days = days == 0 ? 1 : days;
+            if (days < 0 )
+            {
+                return new ResponseMessage { Message = "Please choose correct date (check In/check Out)", Code = 400 };
+            }
+            RoomsPrice roomsPrice = _roomsPriceRepository.Get(pricingId);
+            if (persons >= roomsPrice.Persons)
+            {
+                decimal personPrice = roomsPrice.ActualPrice / roomsPrice.Persons;
+                roomsPrice.Persons = persons;
+                roomsPrice.ActualPrice = personPrice * persons * days;
+            }
+            return roomsPrice;
+        }
     }
 }

@@ -5,6 +5,7 @@ using AhoyBooking.ViewModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 
 namespace AhoyBooking.Controllers
@@ -24,17 +25,13 @@ namespace AhoyBooking.Controllers
         }
 
         [HttpPost]
-        public Hotel AddHotel(HotelViewModel hotelVM)
-        {
-            Hotel hotel = _mapper.Map<Hotel>(hotelVM);
-            return _hotelsService.AddHotel(hotel);
-        }
+        public ActionResult<Hotel> AddHotel(HotelViewModel hotelVM) => Ok(_hotelsService.AddHotel(_mapper.Map<Hotel>(hotelVM)));
         [HttpGet("GetAllHotels")]
-        public List<Hotel> GetHotels(int page = 0, int count = 10) => _hotelsService.GetHotels(page, count);
+        public ActionResult<List<Hotel>> GetHotels(int page = 0, int count = 10) => Ok(_hotelsService.GetHotels(page, count));
         [HttpGet("GetHotelById")]
-        public Hotel GetHotel(int Id) => _hotelsService.GetHotel(Id);
+        public ActionResult<Hotel> GetHotel(int Id) => Ok(_hotelsService.GetHotel(Id));
         [HttpGet("GetHotelsByName")]
-        public List<Hotel> GetHotelsByName(string name) => _hotelsService.GetHotelsByName(name);
+        public ActionResult<List<Hotel>> GetHotelsByName(string name) => Ok(_hotelsService.GetHotelsByName(name));
         [HttpPost("AddToGallery")]
         public ActionResult<int> AddToGallery(HotelGallery gallery)
         {
@@ -64,5 +61,19 @@ namespace AhoyBooking.Controllers
                 return BadRequest(gallery);
             }
         }
+        [HttpGet("Search")]
+        public ActionResult<List<Hotel>> SearchHotel(DateTime checkIn, DateTime checkOut, int persons = 1, string key = "", int page = 0, int count = 10)
+        {
+            var result = _hotelsService.SearchHotel(checkIn, checkOut, persons, page, count);
+            if (result is List<Hotel>)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+        }
+
     }
 }

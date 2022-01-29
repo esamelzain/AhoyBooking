@@ -22,15 +22,15 @@ namespace RecruitmentHub.API.Controllers
     [ApiController]
     public class AuthenticateController : ControllerBase
     {
-        private readonly AccountsService _accountService;
-        public AuthenticateController(AccountsService accountService)
+        private readonly IAccountsService _accountService;
+        public AuthenticateController(IAccountsService accountService)
         {
             _accountService = accountService;
         }
         [HttpPost]
         [Route("login")]
-        public async Task<LoginResponseModel> Login([FromBody] LoginModel model) => await _accountService.Login(model);
+        public async Task<ActionResult<LoginResponseModel>> Login([FromBody] LoginModel model) => Ok(await _accountService.Login(model));
         [HttpPost("Register")]
-        public async Task<BaseResponse> Register(RegisterModel registerModel) => await _accountService.AddUser(registerModel);
+        public async Task<ActionResult<BaseResponse>> Register(RegisterModel registerModel) => Ok(await _accountService.AddUser(registerModel));
     }
 }
