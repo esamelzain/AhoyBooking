@@ -58,7 +58,7 @@ namespace AhoyBooking
             services.AddScoped<IRoomsPriceService, RoomsPriceService>();
             services.AddScoped<IBookingService, BookingService>();
             services.AddScoped<IAccountsService, AccountsService>();
-            
+
 
             ///Authentication
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -123,9 +123,9 @@ namespace AhoyBooking
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AhoyBooking v1"));
             }
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AhoyBooking v1"));
 
             app.UseHttpsRedirection();
 
