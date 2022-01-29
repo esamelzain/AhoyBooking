@@ -14,6 +14,10 @@ namespace AhoyBooking.Test
 {
     public class HotelsTest
     {
+        /// <summary>
+        /// Test code is not completed 
+        /// we have to check values also which is not passing the test because of some mapping problems
+        /// </summary>
         private static IMapper _mapper;
         private static Mock<IHotelsService> _hotelMock;
         private static Mock<IHotelImageRepository> _imagesMock;
@@ -39,7 +43,7 @@ namespace AhoyBooking.Test
         {
             HotelsController hotelsController = new HotelsController(_hotelMock.Object, _mapper, _imagesMock.Object);
             var result = hotelsController.AddHotel(GetHotelVM());
-            Assert.IsType<ActionResult<Hotel>>(result.Result);
+            Assert.IsType<ActionResult<Hotel>>(result);
         }
         //helper
         private HotelViewModel GetHotelVM() => new HotelViewModel

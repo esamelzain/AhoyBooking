@@ -36,7 +36,7 @@ namespace AhoyBooking.Services
             }
             else
             {
-                return new ResponseMessage { Message = "Please choose correct date (check In/check Out)", Code = 400 };
+                return result;
             }
         }
         /// <summary>

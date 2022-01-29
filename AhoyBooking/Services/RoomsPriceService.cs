@@ -45,6 +45,10 @@ namespace AhoyBooking.Services
         public object CalculatePrice(int pricingId, int persons, DateTime checkIn, DateTime checkOut)
         {
             int days = (int)(checkOut - checkIn).TotalDays;
+            if (pricingId<=0)
+            {
+                return new ResponseMessage { Message = "Please choose correct package", Code = 400 };
+            }
             days = days == 0 ? 1 : days;
             if (days < 0 )
             {
